@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('file_revisions', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name', 10);
-            $table->string('last_name', 10);
-            $table->string('email')->unique();
-            $table->string('password');
+            $table->foreignId('file_id')->constrained('files');
+            $table->string('title');
+            $table->text('content');
             $table->timestamps();
             $table->dropColumn('updated_at');
         });
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('file_revisions');
     }
 };
