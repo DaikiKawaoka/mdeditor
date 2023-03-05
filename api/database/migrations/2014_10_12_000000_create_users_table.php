@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('first_name', 10);
             $table->string('last_name', 10);
             $table->string('email')->unique();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->timestamps();
             $table->dropColumn('updated_at');
         });
