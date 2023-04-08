@@ -7,24 +7,24 @@ use App\Models\User;
 class UserRepository
 {
     /**
-     * get user by email
+     * Retrieve a user based on given parameters.
      *
-     * @param string $email
-     * @return User
+     * @param array $param
+     * @return User|null
      */
-    public function getUserByEmail(string $_email): ?User
+    public function findUserByParam(array $param): ?User
     {
-        return User::where("email", $_email)->first();
+        return User::where($param)->first();
     }
 
     /**
-     * create user
+     * Create a new user.
      *
-     * @param array $_param
+     * @param array $param
      * @return User
      */
-    public function createUser(array $_param): User
+    public function createUser(array $param): User
     {
-        return User::create($_param);
+        return User::create($param);
     }
 }

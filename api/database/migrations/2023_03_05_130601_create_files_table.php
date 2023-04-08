@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('files', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('dir_id')->constrained('directories');
-            $table->string('title');
-            $table->text('content');
+            $table->foreignId('dir_id')->constrained('directories')->cascadeOnDelete();;
+            $table->text('content')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

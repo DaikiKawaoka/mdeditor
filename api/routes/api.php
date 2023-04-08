@@ -3,6 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthenticateController;
+use App\Http\Controllers\DirectoryController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\FileController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,9 +18,19 @@ use App\Http\Controllers\AuthenticateController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::get('/auth/redirect', [AuthenticateController::class, 'redirectToGoogle']);
-Route::get('/login/callback', [AuthenticateController::class, 'handleGoogleCallback']);
+Route::get('/signin/callback', [AuthenticateController::class, 'handleGoogleCallback']);
+Route::get('/signout', [AuthenticateController::class, 'signout']);
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::get('/home', [HomeController::class, 'index']);
+    Route::get('/directories/{directoryId}/files', [FileController::class, 'index']);
+    Route::post('/directory', [DirectoryController::class, 'store']);
+    Route::put('/directory', [DirectoryController::class, 'update']);
+    Route::delete('/directory', [DirectoryController::class, 'destroy']);
+    Route::post('/file', [FileController::class, 'store']);
+});

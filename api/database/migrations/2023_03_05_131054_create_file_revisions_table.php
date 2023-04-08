@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('file_revisions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('file_id')->constrained('files');
-            $table->string('title');
-            $table->text('content');
+            $table->text('content')->nullable();
             $table->timestamps();
             $table->dropColumn('updated_at');
         });

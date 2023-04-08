@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->string('name', 30);
+            // 削除することができるかフラグ
+            $table->boolean('deletable')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

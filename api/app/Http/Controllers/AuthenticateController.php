@@ -2,36 +2,59 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\AuthenticateService;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use App\Services\AuthenticateService;
 
 class AuthenticateController extends Controller
 {
+    /**
+     * Constructor for AuthenticateController.
+     *
+     * @param AuthenticateService|null $authenticateService
+     */
     public function __construct(
-        private ?AuthenticateService $_authenticateService = null
+        private ?AuthenticateService $authenticateService = null
     ){}
 
     /**
-     * function returning redirect url of other service
+     * Redirect the user to the Google authentication page.
      *
-     * @return JsonResponse
+     * @return JsonResponse The JSON response containing the redirect URL for Google authentication.
      */
     public function redirectToGoogle(): JsonResponse
     {
+        $redirectUrl = $this->authenticateService->getRedirectUrl(config('mdEditor.provider.google'));
+
         return response()->json([
-            'redirect_url' => $this->_authenticateService->getRedirectUrl(config('mdEditor.provider.google'))
+            'redirect_url' => $redirectUrl
         ]);
     }
 
     /**
-     * function logging in to this app with google
+     * Handle the callback from Google authentication.
      *
-     * @return RedirectResponse
+     * @return RedirectResponse The redirect response to the homepage.
      */
     public function handleGoogleCallback(): RedirectResponse
     {
-        $this->_authenticateService->oAuthAuthentication(config('mdEditor.provider.google'));
+        $this->authenticateService->oAuthAuthentication(config('mdEditor.provider.google'));
+
         return redirect("/");
+    }
+
+    /**
+     * Sign out the user.
+     *
+     * @param Request $request The HTTP request object.
+     *
+     * @return JsonResponse The JSON response indicating success.
+     */
+    public function signOut(Request $request): JsonResponse
+    {
+        $this->authenticateService->signOut($request);
+
+        return response()->json(true);
     }
 }

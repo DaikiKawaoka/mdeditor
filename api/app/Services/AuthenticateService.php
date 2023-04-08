@@ -2,49 +2,90 @@
 
 namespace App\Services;
 
-use Laravel\Socialite\Contracts\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
 use App\Repositories\UserRepository;
-use Illuminate\Support\Facades\Auth;
+use App\Repositories\DirectoryRepository;
+use App\Models\Directory;
 
 class AuthenticateService
 {
+    /**
+     * Constructor for AuthenticateService.
+     *
+     * @param UserRepository|null $userRepository
+     * @param DirectoryRepository|null $directoryRepository
+     * @param Directory|null $directoryModel
+     */
     public function __construct(
-        private ?UserRepository $_userRepository = null
+        private ?UserRepository $userRepository = null,
+        private ?DirectoryRepository $directoryRepository = null,
+        private ?Directory $directoryModel = null
     ){}
 
     /**
-     * get redirect url from repository
+     * Get the redirect URL for the given provider.
      *
      * @param string $provider
-     *
      * @return string
      */
-    public function getRedirectUrl(string $_provider): string
+    public function getRedirectUrl(string $provider): string
     {
-        return Socialite::driver($_provider)->redirect()->getTargetUrl();
+        return Socialite::driver($provider)->redirect()->getTargetUrl();
     }
 
     /**
-     * OAuth認証
+     * Authenticate the user via OAuth.
      *
      * @param string $provider
+     * @throws \Exception
      * @return void
      */
-    public function oAuthAuthentication(string $_provider): void
+    public function oAuthAuthentication(string $provider): void
     {
-        $_providerUser = Socialite::driver($_provider)->stateless()->user();
-        $_user = $this->_userRepository->getUserByEmail($_providerUser->getEmail());
+        try {
+            DB::beginTransaction();
 
-        if (is_null($_user)) {
-            $_user = $this->_userRepository->createUser([
-                'first_name' => $_providerUser["given_name"],
-                'last_name'  => $_providerUser["family_name"],
-                'email'      => $_providerUser["email"],
-            ]);
+            $providerUser = Socialite::driver($provider)->stateless()->user();
+            $user = $this->userRepository->findUserByParam(['email' => $providerUser->getEmail()]);
+
+            if (is_null($user)) {
+                $user = $this->userRepository->createUser([
+                    'first_name' => $providerUser->getGivenName(),
+                    'last_name'  => $providerUser->getFamilyName(),
+                    'email'      => $providerUser->getEmail(),
+                ]);
+
+                $this->directoryRepository->save(
+                    $this->directoryModel,
+                    [
+                        'user_id'   => $user->id,
+                        'name'      => config('mdEditor.defaultDirectoryName'),
+                        'deletable' => false
+                    ]
+                );
+            }
+            DB::commit();
+
+            Auth::login($user);
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
         }
+    }
 
-        Auth::login($_user);
-        return;
+    /**
+     * Sign the user out of the application.
+     *
+     * @param  Request  $request
+     * @return void
+     */
+    public function signOut(Request $request): void
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
     }
 }
