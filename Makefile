@@ -2,6 +2,9 @@ up:
 	docker-compose up -d
 	docker-compose exec front yarn start
 
+up-prod:
+	docker-compose -f docker-compose.prod.yml up -d
+
 init:
 	docker-compose up --build -d
 	docker-compose exec api composer install
@@ -10,6 +13,14 @@ init:
 	docker-compose exec api php artisan migrate:refresh --seed
 	docker-compose exec front yarn install
 	docker-compose exec front yarn start
+
+init-prod:
+	docker-compose -f docker-compose.prod.yml build
+	docker-compose -f docker-compose.prod.yml up -d
+	docker-compose exec api composer install
+	docker-compose exec api cp .env.example .env
+	docker-compose exec api php artisan key:generate
+	docker-compose exec api php artisan migrate:refresh --seed
 
 down:
 	docker-compose down
