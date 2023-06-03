@@ -31,9 +31,9 @@ class FileRepository
      * Finds a file by ID.
      *
      * @param int $id
-     * @return File
+     * @return File|null
      */
-    public function findFileById(int $id) : File
+    public function findFileById(int $id) : File|null
     {
         return $this->_fileModel::find($id);
     }
@@ -48,5 +48,17 @@ class FileRepository
     public function save(File $file, array $data) : bool
     {
         return $file->fill($data)->save();
+    }
+
+    /**
+     * Deletes a file.
+     *
+     * @param File $file
+     * @param array $data
+     * @return bool
+     */
+    public function delete(File $file) : bool
+    {
+        return $file->delete();
     }
 }

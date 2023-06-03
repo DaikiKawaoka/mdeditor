@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use App\Services\AuthenticateService;
+use App\Http\Requests\SignInRequest;
+use App\Http\Requests\SignUpRequest;
 
 class AuthenticateController extends Controller
 {
@@ -42,6 +45,40 @@ class AuthenticateController extends Controller
         $this->authenticateService->oAuthAuthentication(config('mdEditor.provider.google'));
 
         return redirect("/");
+    }
+
+    /**
+     *
+     *
+     * @return RedirectResponse The redirect response to the homepage.
+     */
+    public function signIn(SignInRequest $request): JsonResponse
+    {
+        $credentials = $request->only('email', 'password');
+        $result = $this->authenticateService->formAuthentication($credentials, $request->remember);
+
+        if (!$result) {
+            return response()->json($result, Response::HTTP_UNAUTHORIZED);
+        }
+        return response()->json($result);
+    }
+
+    /**
+     *
+     *
+     * @return RedirectResponse The redirect response to the homepage.
+     */
+    public function signUp(SignUpRequest $request): JsonResponse
+    {
+        $data = [
+            'first_name' => $request->first_name,
+            'last_name'  => $request->last_name,
+            'email'      => $request->email,
+            'password'   => $request->password,
+        ];
+        $result = $this->authenticateService->signUp($data);
+
+        return response()->json($result);
     }
 
     /**

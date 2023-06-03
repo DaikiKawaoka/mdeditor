@@ -40,14 +40,34 @@ class FileService
      */
     public function save(int $id, array $data) :bool
     {
-        // If $id is provided, get the existing file, otherwise create a new file
-        if ($id) {
-            $file = $this->fileRepository->findFileById($id);
-        } else {
+        // Find the file by ID or create a new file object
+        $file = $this->fileRepository->findFileById($id);
+        if (is_null($file)) {
             $file = $this->fileModel;
         }
 
         // Save the file
         return $this->fileRepository->save($file, $data);
+    }
+
+    /**
+     * Delete a file
+     *
+     * @param int|null $id
+     * @return bool
+     */
+    public function delete(?int $id): bool
+    {
+        if (!$id) {
+            return false;
+        }
+
+        $file = $this->fileRepository->findFileById($id);
+
+        if (is_null($file)) {
+            return false;
+        }
+
+        return $this->fileRepository->delete($file);
     }
 }

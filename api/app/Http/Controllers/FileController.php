@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Services\DirectoryService;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Services\FileService;
 
 class FileController extends Controller
@@ -60,12 +61,41 @@ class FileController extends Controller
             'updated_at' => $request->file['updated_at'],
         ];
 
-        // Save file using the FileService
-        $result = $this->fileService->save($id, $data);
+        if (!$data['content']) {
+            $result = $this->fileService->delete($id);
+        } else {
+            $result = $this->fileService->save($id, $data);
+        }
 
         // Return JSON response with result
         return response()->json([
             'result' => $result,
+        ]);
+    }
+
+    /**
+     * Delete a file to the database.
+     *
+     * @param  Request  $_request
+     * @return JsonResponse
+     *
+     * @throws NotFoundHttpException
+     */
+    public function destroy(Request $_request): JsonResponse
+    {
+        // Get directory id from request.
+        $_id = $_request->input('id');
+
+        // Delete the directory from the database.
+        $_result = $this->fileService->delete($_id);
+
+        if (!$_result) {
+            // Throw an exception if the directory was not found.
+            throw new NotFoundHttpException(sprintf('The directory with ID:%s was not found.', $_id));
+        }
+
+        return response()->json([
+            'result' => $_result,
         ]);
     }
 }

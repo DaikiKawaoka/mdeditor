@@ -20,6 +20,8 @@ use App\Http\Controllers\FileController;
 
 Route::get('/auth/redirect', [AuthenticateController::class, 'redirectToGoogle']);
 Route::get('/signin/callback', [AuthenticateController::class, 'handleGoogleCallback']);
+Route::post('/signin', [AuthenticateController::class, 'signIn']);
+Route::post('/signup', [AuthenticateController::class, 'signUp']);
 Route::get('/signout', [AuthenticateController::class, 'signout']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
@@ -33,4 +35,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/directory', [DirectoryController::class, 'update']);
     Route::delete('/directory', [DirectoryController::class, 'destroy']);
     Route::post('/file', [FileController::class, 'store']);
+    Route::delete('/file', [FileController::class, 'destroy']);
 });

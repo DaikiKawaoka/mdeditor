@@ -1,19 +1,21 @@
 import { Route, Routes } from 'react-router-dom';
 import SignIn from '../components/Page/SignIn';
 import SignUp from '../components/Page/SignUp';
+import Loading from '../components/Page/Loading';
 import { Home } from '../components/Page/Home';
 import Head from '../components/Head';
-import Header from '../components/Header';
 import NotSignInHeader from '../components/NotSignInHeader';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery'
+import Box from '@mui/material/Box';
 
 export const Router = () => {
-  const isDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
+  // const isDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
 
   const theme = createTheme({
     palette: {
-      mode: isDarkMode ? 'dark' : 'light'
+      mode: 'dark'
+      // mode: isDarkMode ? 'dark' : 'light'
     }
   })
 
@@ -33,11 +35,20 @@ export const Router = () => {
           <SignUp />
         </ThemeProvider>
       } />
+      <Route path="/signin/callback" element={
+        <ThemeProvider theme={theme}>
+          <Head title='Loading | Markdown Editor'/>
+          <NotSignInHeader/>
+          <Loading />
+        </ThemeProvider>
+      } />
       <Route path="/" element={
         <ThemeProvider theme={theme}>
           <Head title='Home | Markdown Editor'/>
-          <Header/>
-          <Home />
+          <Box sx={{ height: '100vh' }}>
+            {/* <Header/> */}
+            <Home />
+          </Box>
         </ThemeProvider>
       } />
     </Routes>
