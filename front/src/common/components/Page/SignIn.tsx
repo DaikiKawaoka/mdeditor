@@ -100,7 +100,7 @@ export default function SignIn() {
               setFormData({ ...formData, email: e.target.value })
             }
             error={errors.email && errors.email.length > 0}
-            helperText={errors.email[0]}
+            helperText={errors.email && errors.email.length > 0 ? errors.email[0] : ""}
           />
           <TextField
             margin="normal"
@@ -115,7 +115,7 @@ export default function SignIn() {
               setFormData({ ...formData, password: e.target.value })
             }
             error={errors.password && errors.password.length > 0}
-            helperText={errors.password[0]}
+            helperText={errors.password[0] && errors.password.length > 0 ? errors.password[0] : ""}
           />
           <FormControlLabel
             control={
