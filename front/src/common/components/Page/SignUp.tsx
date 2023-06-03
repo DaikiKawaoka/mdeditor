@@ -91,7 +91,7 @@ export default function SignUp() {
                 autoFocus
                 onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
                 error={errors.first_name && errors.first_name.length > 0}
-                helperText={errors.first_name[0]}
+                helperText={errors.first_name && errors.first_name.length > 0 ? errors.first_name[0] : ""}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -104,7 +104,7 @@ export default function SignUp() {
                 autoComplete="family-name"
                 onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
                 error={errors.last_name && errors.last_name.length > 0}
-                helperText={errors.last_name[0]}
+                helperText={errors.last_name && errors.last_name.length > 0 ? errors.last_name[0] : ""}
               />
             </Grid>
             <Grid item xs={12}>
@@ -117,7 +117,7 @@ export default function SignUp() {
                 autoComplete="email"
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 error={errors.email && errors.email.length > 0}
-                helperText={errors.email[0]}
+                helperText={errors.email && errors.email.length > 0 ? errors.email[0] : ""}
               />
             </Grid>
             <Grid item xs={12}>
@@ -131,7 +131,7 @@ export default function SignUp() {
                 autoComplete="new-password"
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 error={errors.password && errors.password.length > 0}
-                helperText={errors.password[0]}
+                helperText={errors.password && errors.password.length > 0 ? errors.password[0] : ""}
               />
             </Grid>
           </Grid>

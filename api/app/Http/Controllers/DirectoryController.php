@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Services\DirectoryService;
+use App\Http\Requests\CreateDirectoryRequest;
 
 class DirectoryController extends Controller
 {
@@ -25,13 +26,13 @@ class DirectoryController extends Controller
      * @param  Request  $request
      * @return JsonResponse
      */
-    public function store(Request $request): JsonResponse
+    public function store(CreateDirectoryRequest $request): JsonResponse
     {
         // Get directory id and data from request.
-        $id = $request->directory['id'];
+        $id = $request->id;
         $data = [
             'user_id'   => Auth::id(),
-            'name'      => $request->directory['name'],
+            'name'      => $request->name,
             'deletable' => true
         ];
 

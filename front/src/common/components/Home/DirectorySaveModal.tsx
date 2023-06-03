@@ -31,13 +31,16 @@ type Props = {
   changeSelectedDirectory: Dispatch<DirectoryModel> | null;
 };
 const ACTION_LIST: Array<string> = ["CREATE", "UPDATE"];
-const MAX_NAME_LENGTH: number = 30;
 
 export default function TransitionsModal(props: Props) {
   const isActionCreate = props.action === ACTION_LIST[0];
   const [directoryName, setDirectoryName] = useState<string>(
     isActionCreate ? "" : props.directory!.name
   );
+
+  const [errors, setErrors] = useState({
+    name: []
+  });
 
   async function createDirectory() {
     // ファイル保存
@@ -48,7 +51,8 @@ export default function TransitionsModal(props: Props) {
     axios.get("/sanctum/csrf-cookie").then((response) => {
       axios
         .post(process.env.REACT_APP_API_URL + "/directory", {
-          directory: newDirectory,
+          id: newDirectory.id,
+          name: newDirectory.name,
         })
         .then((res) => {
           props.directories.push(res.data.directory);
@@ -58,7 +62,9 @@ export default function TransitionsModal(props: Props) {
           setDirectoryName('');
         })
         .catch((error) => {
-          console.log(error);
+          if (error.response.status === 422) {
+            setErrors(error.response.data.errors);
+          }
         });
     });
   }
@@ -72,7 +78,8 @@ export default function TransitionsModal(props: Props) {
     axios.get("/sanctum/csrf-cookie").then((response) => {
       axios
         .put(process.env.REACT_APP_API_URL + "/directory", {
-          directory: newDirectory,
+          id: newDirectory.id,
+          name: newDirectory.name,
         })
         .then((res) => {
           const updatedDirectories = props.directories.map((directory) => {
@@ -124,14 +131,16 @@ export default function TransitionsModal(props: Props) {
               </Typography>
               <Box sx={{ width: "85%" }}>
                 <TextField
+                  required
+                  name="name"
                   focused
                   size="small"
                   sx={{ width: "100%" }}
-                  inputProps={{ maxLength: MAX_NAME_LENGTH }}
-                  helperText={directoryName.length === MAX_NAME_LENGTH ? `入力できる文字数は${MAX_NAME_LENGTH}文字までです。` : ""}
                   value={directoryName}
                   onChange={(event) => setDirectoryName(event.target.value)}
-                  color={directoryName.length === MAX_NAME_LENGTH ? "warning" : "primary"}
+                  color="primary"
+                  error={errors.name && errors.name.length > 0}
+                  helperText={errors.name && errors.name.length > 0 ? errors.name[0] : ""}
                 />
               </Box>
             </Box>
