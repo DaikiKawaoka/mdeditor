@@ -18,9 +18,9 @@ init-prod:
 	docker-compose -f docker-compose.prod.yml build
 	docker-compose -f docker-compose.prod.yml up -d
 	docker-compose exec api composer install
-	docker-compose exec api cp .env.example .env
+	docker-compose exec api cp .env.production .env
 	docker-compose exec api php artisan key:generate
-	docker-compose exec api php artisan migrate:refresh --seed
+	docker-compose exec api php artisan migrate
 
 down:
 	docker-compose down
