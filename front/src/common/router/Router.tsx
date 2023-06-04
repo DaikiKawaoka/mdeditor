@@ -46,7 +46,14 @@ export const Router = () => {
         <ThemeProvider theme={theme}>
           <Head title='Home | Markdown Editor'/>
           <Box sx={{ height: '100vh' }}>
-            {/* <Header/> */}
+            <Home />
+          </Box>
+        </ThemeProvider>
+      } />
+      <Route path="*" element={
+        <ThemeProvider theme={theme}>
+          <Head title='Home | Markdown Editor'/>
+          <Box sx={{ height: '100vh' }}>
             <Home />
           </Box>
         </ThemeProvider>
