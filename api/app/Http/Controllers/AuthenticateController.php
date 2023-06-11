@@ -38,19 +38,19 @@ class AuthenticateController extends Controller
     /**
      * Handle the callback from Google authentication.
      *
-     * @return RedirectResponse The redirect response to the homepage.
+     * @return JsonResponse
      */
-    public function handleGoogleCallback(): RedirectResponse
+    public function handleGoogleCallback(): JsonResponse
     {
         $this->authenticateService->oAuthAuthentication(config('mdEditor.provider.google'));
 
-        return redirect("/");
+        return response()->json(true);
     }
 
     /**
      *
      *
-     * @return RedirectResponse The redirect response to the homepage.
+     * @return JsonResponse
      */
     public function signIn(SignInRequest $request): JsonResponse
     {
@@ -66,7 +66,7 @@ class AuthenticateController extends Controller
     /**
      *
      *
-     * @return RedirectResponse The redirect response to the homepage.
+     * @return JsonResponse
      */
     public function signUp(SignUpRequest $request): JsonResponse
     {
