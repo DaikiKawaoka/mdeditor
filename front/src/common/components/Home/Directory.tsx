@@ -46,7 +46,9 @@ const Directory = (props: Props) => {
           backgroundColor: isSelected() ? "#ae8e23" : "transparent",
         }}
         onClick={() => {
-          props.changeSelectedDirectory(props.directory);
+          if (props.directory.id !== props.selectedDirectory!.id) {
+            props.changeSelectedDirectory(props.directory);
+          }
         }}
         onContextMenu={(event) => {
           event.preventDefault();

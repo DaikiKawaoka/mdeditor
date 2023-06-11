@@ -63,7 +63,7 @@ export const Home = () => {
       newFiles(res.data.files);
       let file = res.data.files[0];
       if (!file) {
-        file = createNonRegisteredFile({ user_id: user!.id, dir_id: selectedDirectory!.id });
+        file = createNonRegisteredFile({ user_id: user!.id, dir_id: directory.id });
       }
       setSelectedFile(file);
     } catch (error) {
@@ -90,8 +90,6 @@ export const Home = () => {
 
     // 選択中ファイルを変更
     setSelectedFile(file)
-    // 編集済みフラグを初期化
-    setIsEditedFile(false);
   }
 
   async function updateFile(file :File|null) {
@@ -113,6 +111,9 @@ export const Home = () => {
         console.log(error);
       });
     });
+
+    // 編集済みフラグを初期化
+    setIsEditedFile(false);
   }
 
   // フォルダ内のファイル一覧を初期化
@@ -150,6 +151,7 @@ export const Home = () => {
 
     // 編編集フラグをON
     setIsEditedFile(true);
+    console.log('aaa');
 
     // オートセーブ開始
     autoSaveWithFile(newFileValue);
@@ -168,7 +170,6 @@ export const Home = () => {
 
   // ファイルが編集された場合、5秒毎に自動保存処理
   const autoSaveWithFile = (file :File|null) => {
-    console.log('オートセーブ開始');
     if(file === null) return;
 
     // タイマーが起動していた場合リセット
@@ -181,11 +182,8 @@ export const Home = () => {
         updateFile(file);
       }
       // タイマーリセット
-      console.log('タイマーリセット');
       resetTimer();
     }, 5000);
-
-    console.log('オートセーブ終了');
   };
 
   const navigate = useNavigate();

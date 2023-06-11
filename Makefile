@@ -22,7 +22,7 @@ init-prod:
 	docker compose exec api php artisan key:generate
 
 build-prod:
-	docker compose exec front REACT_APP_ENV=production yarn build
+	docker compose exec front yarn build REACT_APP_ENV=production
 
 down:
 	docker compose down
