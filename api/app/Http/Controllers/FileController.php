@@ -63,13 +63,16 @@ class FileController extends Controller
 
         if (!$data['content']) {
             $result = $this->fileService->delete($id);
+            $type = 'delete';
         } else {
             $result = $this->fileService->save($id, $data);
+            $type = 'save';
         }
 
         // Return JSON response with result
         return response()->json([
             'result' => $result,
+            'type' => $type
         ]);
     }
 

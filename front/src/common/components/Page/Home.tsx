@@ -103,17 +103,21 @@ export const Home = () => {
       )
       .then((res) => {
         // 保存が成功した場合、登録済フラグをONにする
-        const index = files.findIndex(file => file.id === selectedFile!.id)
-        files[index].is_registered = true;
-        // setFiles(files);
-        console.log(files);
+        if (res.data.type = 'save') {
+          const index = files.findIndex(file => file.id === selectedFile!.id)
+          files[index].id = res.data.result;
+          files[index].content = file!.content;
+          files[index].is_registered = true;
+          setSelectedFile({...file!, id: res.data.result})
+          setFiles(files);
+        }
+        // 編集済みフラグを初期化
+        setIsEditedFile(false);
       }).catch(error => {
         console.log(error);
       });
     });
 
-    // 編集済みフラグを初期化
-    setIsEditedFile(false);
   }
 
   // フォルダ内のファイル一覧を初期化
@@ -151,7 +155,6 @@ export const Home = () => {
 
     // 編編集フラグをON
     setIsEditedFile(true);
-    console.log('aaa');
 
     // オートセーブ開始
     autoSaveWithFile(newFileValue);
@@ -178,12 +181,12 @@ export const Home = () => {
     }
 
     timerRef.current = window.setTimeout(() => {
-      if (isEditedFile) {
+      // if (isEditedFile) {
         updateFile(file);
-      }
+      // }
       // タイマーリセット
       resetTimer();
-    }, 5000);
+    }, 1500);
   };
 
   const navigate = useNavigate();

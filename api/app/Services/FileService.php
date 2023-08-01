@@ -36,9 +36,9 @@ class FileService
      *
      * @param int $id File ID.
      * @param array $data File data.
-     * @return bool
+     * @return int
      */
-    public function save(int $id, array $data) :bool
+    public function save(int $id, array $data) :int
     {
         // Find the file by ID or create a new file object
         $file = $this->fileRepository->findFileById($id);

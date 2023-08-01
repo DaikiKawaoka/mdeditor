@@ -43,11 +43,12 @@ class FileRepository
      *
      * @param File $file
      * @param array $data
-     * @return bool
+     * @return int
      */
-    public function save(File $file, array $data) : bool
+    public function save(File $file, array $data) : int
     {
-        return $file->fill($data)->save();
+        $file->fill($data)->save();
+        return $file->id;
     }
 
     /**
