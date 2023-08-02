@@ -53,9 +53,9 @@ class DirectoryController extends Controller
     public function update(Request $_request): JsonResponse
     {
         // Get directory id and data from request.
-        $_id = $_request->directory['id'];
+        $_id = $_request->id;
         $_data = [
-            'name' => $_request->directory['name'],
+            'name' => $_request->name,
         ];
 
         // Update the directory in the database.
